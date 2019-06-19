@@ -37,8 +37,8 @@ public class BulkTableQuerier extends TableQuerier {
   private static final Logger log = LoggerFactory.getLogger(BulkTableQuerier.class);
 
   public BulkTableQuerier(QueryMode mode, String name, String schemaPattern,
-                          String topicPrefix, boolean mapNumerics) {
-    super(mode, name, topicPrefix, schemaPattern, mapNumerics);
+                          String topicPrefix, boolean mapNumerics, int resultSetFetchSize) {
+    super(mode, name, topicPrefix, schemaPattern, mapNumerics, resultSetFetchSize);
   }
 
   @Override

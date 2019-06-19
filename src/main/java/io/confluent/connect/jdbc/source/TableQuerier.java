@@ -40,6 +40,7 @@ abstract class TableQuerier implements Comparable<TableQuerier> {
   protected final String name;
   protected final String query;
   protected final String topicPrefix;
+  protected final int resultSetFetchSize;
 
   // Mutable state
 
@@ -50,7 +51,7 @@ abstract class TableQuerier implements Comparable<TableQuerier> {
   protected Schema schema;
 
   public TableQuerier(QueryMode mode, String nameOrQuery, String topicPrefix,
-                      String schemaPattern, boolean mapNumerics) {
+                      String schemaPattern, boolean mapNumerics, int resultSetFetchSize) {
     this.mode = mode;
     this.schemaPattern = schemaPattern;
     this.name = mode.equals(QueryMode.TABLE) ? nameOrQuery : null;
@@ -58,6 +59,7 @@ abstract class TableQuerier implements Comparable<TableQuerier> {
     this.topicPrefix = topicPrefix;
     this.mapNumerics = mapNumerics;
     this.lastUpdate = 0;
+    this.resultSetFetchSize = resultSetFetchSize < 0 ? 10000 : resultSetFetchSize;
   }
 
   public long getLastUpdate() {
@@ -69,6 +71,8 @@ abstract class TableQuerier implements Comparable<TableQuerier> {
       return stmt;
     }
     createPreparedStatement(db);
+    //Set fetchSize for large data set streaming
+    stmt.setFetchSize(resultSetFetchSize);
     return stmt;
   }
 
