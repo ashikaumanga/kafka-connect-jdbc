@@ -148,6 +148,7 @@ public class JdbcSourceTask extends SourceTask {
       if (resultSetFetchSize == null) {
         resultSetFetchSize = JdbcSourceTaskConfig.RESULTSET_FETCHSIZE_DEFAULT;
       }
+      log.info("using fetchSize {}", resultSetFetchSize);
 
       if (mode.equals(JdbcSourceTaskConfig.MODE_BULK)) {
         tableQueue.add(new BulkTableQuerier(queryMode, tableOrQuery, schemaPattern,
@@ -200,17 +201,21 @@ public class JdbcSourceTask extends SourceTask {
 
       final List<SourceRecord> results = new ArrayList<>();
       try {
-        log.debug("Checking for next block of results from {}", querier.toString());
+        log.info("Checking for next block of results from {}", querier.toString());
         querier.maybeStartQuery(cachedConnectionProvider.getValidConnection());
 
         int batchMaxRows = config.getInt(JdbcSourceTaskConfig.BATCH_MAX_ROWS_CONFIG);
+        log.info("batchMaxRows is {}", batchMaxRows);
         boolean hadNext = true;
         while (results.size() < batchMaxRows && (hadNext = querier.next())) {
-          results.add(querier.extractRecord());
+          SourceRecord sourceRecord = querier.extractRecord();
+          log.debug("--row {}, {}", results.size(), sourceRecord);
+          results.add(sourceRecord);
         }
 
         if (!hadNext) {
           // If we finished processing the results from the current query, we can reset and send the querier to the tail of the queue
+          log.info("hadNext is {}, going to cleanup resultSet", hadNext);
           resetAndRequeueHead(querier);
         }
 

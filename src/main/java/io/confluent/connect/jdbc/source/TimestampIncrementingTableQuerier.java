@@ -144,6 +144,8 @@ public class TimestampIncrementingTableQuerier extends TableQuerier {
     String queryString = builder.toString();
     log.debug("{} prepared SQL query: {}", this, queryString);
     stmt = db.prepareStatement(queryString);
+    log.info("TimestampIncrementingTableQuerier: Setting up fetchsize");
+    stmt.setFetchSize(resultSetFetchSize);
   }
 
   @Override

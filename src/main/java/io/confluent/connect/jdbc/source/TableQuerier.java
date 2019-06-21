@@ -18,6 +18,8 @@ package io.confluent.connect.jdbc.source;
 
 import org.apache.kafka.connect.data.Schema;
 import org.apache.kafka.connect.source.SourceRecord;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -50,6 +52,8 @@ abstract class TableQuerier implements Comparable<TableQuerier> {
   protected ResultSet resultSet;
   protected Schema schema;
 
+  private static final Logger log = LoggerFactory.getLogger(TableQuerier.class);
+
   public TableQuerier(QueryMode mode, String nameOrQuery, String topicPrefix,
                       String schemaPattern, boolean mapNumerics, int resultSetFetchSize) {
     this.mode = mode;
@@ -72,6 +76,7 @@ abstract class TableQuerier implements Comparable<TableQuerier> {
     }
     createPreparedStatement(db);
     //Set fetchSize for large data set streaming
+    log.info("TableQuerier: set fetchsize");
     stmt.setFetchSize(resultSetFetchSize);
     return stmt;
   }
