@@ -76,7 +76,7 @@ abstract class TableQuerier implements Comparable<TableQuerier> {
     }
     createPreparedStatement(db);
     //Set fetchSize for large data set streaming
-    log.info("TableQuerier: set fetchsize");
+    log.info("TableQuerier: set fetchsize {}", resultSetFetchSize);
     stmt.setFetchSize(resultSetFetchSize);
     return stmt;
   }

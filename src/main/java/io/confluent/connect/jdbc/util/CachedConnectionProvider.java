@@ -50,8 +50,11 @@ public class CachedConnectionProvider {
     try {
       if (connection == null) {
         newConnection();
-      } else if (!connection.isValid(VALIDITY_CHECK_TIMEOUT_S)) {
-        log.info("The database connection is invalid. Reconnecting...");
+//      } else if (!connection.isValid(VALIDITY_CHECK_TIMEOUT_S)) {
+        // this is a stupid work around, as isClosed may not be able to detect uncertain connections
+        // However, since mysql is not able to support MARS https://bugs.mysql.com/bug.php?id=77610, we have to workaround by this
+      } else if (connection.isClosed()) {
+        log.info("The database connection is Closed. Reconnecting...");
         closeQuietly();
         newConnection();
       }

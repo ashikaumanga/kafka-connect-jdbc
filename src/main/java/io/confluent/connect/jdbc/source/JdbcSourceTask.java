@@ -183,7 +183,7 @@ public class JdbcSourceTask extends SourceTask {
 
   @Override
   public List<SourceRecord> poll() throws InterruptedException {
-    log.trace("{} Polling for new data");
+    log.info("{} Polling for new data");
 
     while (!stop.get()) {
       final TableQuerier querier = tableQueue.peek();
@@ -201,15 +201,12 @@ public class JdbcSourceTask extends SourceTask {
 
       final List<SourceRecord> results = new ArrayList<>();
       try {
-        log.info("Checking for next block of results from {}", querier.toString());
         querier.maybeStartQuery(cachedConnectionProvider.getValidConnection());
 
         int batchMaxRows = config.getInt(JdbcSourceTaskConfig.BATCH_MAX_ROWS_CONFIG);
-        log.info("batchMaxRows is {}", batchMaxRows);
         boolean hadNext = true;
         while (results.size() < batchMaxRows && (hadNext = querier.next())) {
           SourceRecord sourceRecord = querier.extractRecord();
-          log.debug("--row {}, {}", results.size(), sourceRecord);
           results.add(sourceRecord);
         }
 
