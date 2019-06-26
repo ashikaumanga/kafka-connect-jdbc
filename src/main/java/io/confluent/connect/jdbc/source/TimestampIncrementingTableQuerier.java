@@ -65,8 +65,8 @@ public class TimestampIncrementingTableQuerier extends TableQuerier {
   public TimestampIncrementingTableQuerier(QueryMode mode, String name, String topicPrefix,
                                            String timestampColumn, String incrementingColumn,
                                            Map<String, Object> offsetMap, Long timestampDelay,
-                                           String schemaPattern, boolean mapNumerics) {
-    super(mode, name, topicPrefix, schemaPattern, mapNumerics);
+                                           String schemaPattern, boolean mapNumerics, int resultSetFetchSize) {
+    super(mode, name, topicPrefix, schemaPattern, mapNumerics, resultSetFetchSize);
     this.timestampColumn = timestampColumn;
     this.incrementingColumn = incrementingColumn;
     this.timestampDelay = timestampDelay;
@@ -144,6 +144,8 @@ public class TimestampIncrementingTableQuerier extends TableQuerier {
     String queryString = builder.toString();
     log.debug("{} prepared SQL query: {}", this, queryString);
     stmt = db.prepareStatement(queryString);
+    log.info("TimestampIncrementingTableQuerier: Setting up fetchsize");
+    stmt.setFetchSize(resultSetFetchSize);
   }
 
   @Override

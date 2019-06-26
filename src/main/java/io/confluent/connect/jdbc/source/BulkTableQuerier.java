@@ -37,8 +37,8 @@ public class BulkTableQuerier extends TableQuerier {
   private static final Logger log = LoggerFactory.getLogger(BulkTableQuerier.class);
 
   public BulkTableQuerier(QueryMode mode, String name, String schemaPattern,
-                          String topicPrefix, boolean mapNumerics) {
-    super(mode, name, topicPrefix, schemaPattern, mapNumerics);
+                          String topicPrefix, boolean mapNumerics, int resultSetFetchSize) {
+    super(mode, name, topicPrefix, schemaPattern, mapNumerics, resultSetFetchSize);
   }
 
   @Override
@@ -49,10 +49,14 @@ public class BulkTableQuerier extends TableQuerier {
         String queryString = "SELECT * FROM " + JdbcUtils.quoteString(name, quoteString);
         log.debug("{} prepared SQL query: {}", this, queryString);
         stmt = db.prepareStatement(queryString);
+        log.info("BulkTableQuerier: Setting up fetchsize for Table mode");
+        stmt.setFetchSize(resultSetFetchSize);
         break;
       case QUERY:
         log.debug("{} prepared SQL query: {}", this, query);
         stmt = db.prepareStatement(query);
+        log.info("BulkTableQuerier: Setting up fetchsize for Query mode");
+        stmt.setFetchSize(resultSetFetchSize);
         break;
     }
   }
