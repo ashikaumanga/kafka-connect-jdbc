@@ -52,7 +52,7 @@
     <properties>
         <confluent.version>${project.version}</confluent.version>
         <kafka.version>0.11.0.3-cp1</kafka.version>
-        <junit.version>4.12</junit.version>
+        <junit.version>4.13.1</junit.version>
         <easymock.version>3.0</easymock.version>
         <powermock.version>1.6.2</powermock.version>
         <derby.version>10.11.1.1</derby.version>
